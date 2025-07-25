@@ -1,0 +1,73 @@
+configuration {
+    display-dmenu: "Clipboard:";
+}
+
+* {
+    background-color: transparent;
+    text-color: #666666;
+    font: "sans 14";
+}
+
+window {
+    location: north;
+    anchor: north;
+    x-offset: 900;
+    y-offset: 0;
+    width: 400px;
+    height: 96px;
+    background-color: transparent;
+    border: 0;
+}
+
+mainbox {
+    background-color: transparent;
+    children: [inputbar, listview];
+    padding: 10px;
+}
+
+inputbar {
+    background-color: transparent;
+    children: [prompt, entry];
+    spacing: 5px;
+    padding: 0 0 10px 0;
+}
+
+prompt {
+    text-color: #67608B;
+    background-color: transparent;
+}
+
+entry {
+    text-color: #666666;
+    background-color: transparent;
+}
+
+listview {
+    background-color: transparent;
+    text-color: #666666;
+    lines: 3;
+    scrollbar: false;
+    border: 0;
+    padding: 0;
+    spacing: 2px;
+}
+
+element {
+    background-color: transparent;
+    padding: 2px;
+}
+
+element-text {
+    background-color: inherit;
+    text-color: #666666;
+}
+
+element-text selected {
+    background-color: inherit;
+    text-color: #444444;
+}
+
+element-icon {
+    background-color: inherit;
+}
+
