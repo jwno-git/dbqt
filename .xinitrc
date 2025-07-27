@@ -6,14 +6,12 @@ brightnessctl set 100%
 # Set Volume upon Launch
 wpctl set-volume @DEFAULT_SINK@ 0%
 
-# Triggewr monitor setup
+# Trigger monitor setup
 ~/.local/bin/monitor-config.sh &
 
 # Screen saver settings
-xset s 1000    # Set screensaver timeout to 45 minutes (2700 seconds)
+xset s 1000    # Set screensaver timeout to 1000 seconds
 xset -dpms     # Disable DPMS (Display Power Management Signaling)
-# Auto-lock when screensaver activates
-xss-lock slock &
 
 # Load X11 resources
 xrdb ~/.Xresources
