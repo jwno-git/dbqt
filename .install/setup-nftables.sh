@@ -1,9 +1,6 @@
 #!/bin/bash
 set -e
 
-# Install nftables
-apt install -y nftables
-
 # Create nftables configuration
 tee /etc/nftables.conf > /dev/null << 'EOF'
 #!/usr/sbin/nft -f
