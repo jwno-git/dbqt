@@ -54,6 +54,7 @@ sudo apt install -y \
   vim \
   wget \
   x11-xserver-utils \
+  xclip \
   xorg \
   xserver-xorg \
   xinit \
