@@ -23,6 +23,10 @@ mv $HOME/dbqt/.root/.vimrc /root/
 mv $HOME/dbqt/.root/debianroot.png /root/
 mv $HOME/dbqt/.root/tlp.conf /etc/
 
+# Move battery toggle script
+mv $HOME/dbqt/battery-toggle /usr/local/bin/
+chmod +x /usr/local/bin/battery-toggle
+
 # Move user configuration
 mv $HOME/dbqt/.config $HOME/
 mv $HOME/dbqt/.local $HOME/
