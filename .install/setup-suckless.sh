@@ -72,4 +72,12 @@ make clean install
 cd ..
 tar -czf dmenu-patched-backup.tar.gz dmenu/
 
+# Cleanup downloaded archives
+rm -f st-0.9.2.tar.gz
+
 echo "Suckless tools built and installed"
+echo "Backup archives created:"
+echo "  - st-patched-backup.tar.gz"
+echo "  - sxiv-backup.tar.gz" 
+echo "  - slock-patched-backup.tar.gz"
+echo "  - dmenu-patched-backup.tar.gz"
