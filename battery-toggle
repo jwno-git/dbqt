@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Get the actual user who called sudo
+REAL_USER="${SUDO_USER:-$USER}"
+USER_HOME=$(getent passwd "$REAL_USER" | cut -d: -f6)
+
+TLP_CONF="/etc/tlp.conf"
+CURRENT_THRESHOLD=$(grep "^STOP_CHARGE_THRESH_BAT0=" "$TLP_CONF" | cut -d'=' -f2)
+
+if [ "$CURRENT_THRESHOLD" = "80" ]; then
+    # Switch to extended battery mode (100%)
+    sed -i 's/^STOP_CHARGE_THRESH_BAT0=80/STOP_CHARGE_THRESH_BAT0=100/' "$TLP_CONF"
+    tlp setcharge 20 100 BATT
+    # Send notification as the real user
+    sudo -u "$REAL_USER" DISPLAY=:0 dunstify -u normal -t 2000 "Unprotected Battery"
+else
+    # Switch to protected mode (80%)
+    sed -i 's/^STOP_CHARGE_THRESH_BAT0=100/STOP_CHARGE_THRESH_BAT0=80/' "$TLP_CONF"
+    tlp setcharge 20 80 BATT
+    # Send notification as the real user
+    sudo -u "$REAL_USER" DISPLAY=:0 dunstify -u normal -t 2000 "Protected Battery"
+fi
