@@ -91,13 +91,13 @@ terminal = "st"
 
 # Keybinds
 keys = [
-    Key([mod], "a", lazy.spawn("rofi -show combi -combi-modes 'drun,run' -theme ~/.config/rofi/qtile-prompt.rasi -sort -no-cycle")),
+    Key([mod], "a", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
     # Key([mod], "a", lazy.function(show_applications_popup), lazy.spawncmd(), desc="Show apps and spawn command prompt"),
     Key([mod], "b",lazy.spawn("sudo /usr/local/bin/battery-toggle"), desc="Toggle battery charge threshold (80%/100%)"),
-    Key([mod], "c", lazy.spawn("sh -c \"cliphist list | rofi -dmenu -p 'Clipboard' -theme ~/.config/rofi/clipboard.rasi -no-cycle | cliphist decode | xclip -selection clipboard\""), desc="Show clipboard history"),
+    Key([mod], "c", lazy.spawn("sh -c \"cliphist list | dmenu -p 'Clipboard' | cliphist decode | xclip -selection clipboard\""), desc="Show clipboard history"),
     Key([mod, "shift"], "c", lazy.spawn("sh -c \"cliphist wipe && dunstify 'Clipboard Cleared' -t 2000\""), desc="Clear clipboard history"),
     # Key([mod], "d", , desc=""),  # d
-    Key([mod], "e", lazy.spawn("st -e lf"), desc="Launch LF file manager"),  # e
+    Key([mod], "e", lazy.spawn("st -e vim"), desc="Launch vim in terminal"),  # e
     Key([mod], "f", lazy.window.toggle_fullscreen(), desc="Toggle fullscreen on the focused window"),  # f
     # Key([mod], "g", , desc=""),  # g
     # Key([mod], "h", , desc=""),  # h
@@ -268,7 +268,7 @@ screens = [
                 # NB Systray is incompatible with Wayland, consider using StatusNotifier instead
                 # widget.StatusNotifier(),
 		widget.TextBox(
-			text="  ",
+			text="  ",
     			background="#00000000",
     			foreground="#777777",
     			padding=0,
@@ -283,7 +283,7 @@ screens = [
     			},
 		),
 		widget.TextBox(
-			text=" ",
+			text=" ",
     			background="#00000000",
     			foreground="#B8A000",
     			padding=0,
@@ -296,7 +296,7 @@ screens = [
 			update_interval=0.1,
 		),
 		widget.TextBox(
-			text="   ",
+			text="   ",
     			background="#00000000",
     			foreground="#00B399",
     			padding=0,
@@ -307,7 +307,7 @@ screens = [
     			update_interval=30,
 		),
 		widget.TextBox(
-			text="   ",
+			text="   ",
     			background="#00000000",
     			foreground="#666666",
     			padding=0,
