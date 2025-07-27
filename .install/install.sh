@@ -28,6 +28,7 @@ sudo apt install -y \
   fastfetch \
   fbset \
   firefox-esr-l10n-en-ca \
+  flatpak \
   fonts-font-awesome \
   fonts-hack \
   fonts-terminus \
@@ -66,11 +67,16 @@ sudo $HOME/dbqt/.install/setup-suckless.sh
 echo "Installing qtile..."
 sudo $HOME/dbqt/.install/setup-qtile.sh
 
-# Step 6: Setup themes and configuration
+# Step 6: Install Flatpaks
+echo "Installing Flatpak applications..."
+flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
+flatpak install -y --user flathub org.flameshot.Flameshot
+
+# Step 7: Setup themes and configuration
 echo "Setting up themes and configuration..."
 sudo $HOME/dbqt/.install/setup-theme-config.sh
 
-# Step 7: Install systemd-boot
+# Step 8: Install systemd-boot
 echo "Installing systemd-boot..."
 sudo apt install -y systemd-boot
 sudo bootctl install
@@ -84,11 +90,11 @@ sudo efibootmgr
 read -r BOOT_ID
 sudo efibootmgr -b "$BOOT_ID" -B
 
-# Step 8: Configure network and services
+# Step 9: Configure network and services
 echo "Configuring network and services..."
 sudo $HOME/dbqt/.install/network-services-setup.sh
 
-# Step 9: Setup nftables firewall
+# Step 10: Setup nftables firewall
 echo "Setting up nftables firewall..."
 sudo $HOME/dbqt/.install/setup-nftables.sh
 
