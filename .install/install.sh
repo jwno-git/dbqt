@@ -3,9 +3,12 @@ set -e
 
 read -p "Press Enter to continue..."
 
+# Make all scripts executable
+chmod +x $HOME/dbqt/.install/*.sh
+
 # Step 1: Setup zram swap
 echo "Setting up zram swap..."
-sudo ./setup-zram.sh
+sudo $HOME/dbqt/.install/setup-zram.sh
 
 # Step 2: Add Chrome repository
 wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/google-chrome-keyring.gpg
@@ -26,6 +29,7 @@ sudo apt install -y \
   fbset \
   firefox-esr-l10n-en-ca \
   fonts-font-awesome \
+  fonts-hack \
   fonts-terminus \
   gimp \
   google-chrome-stable \
@@ -35,6 +39,7 @@ sudo apt install -y \
   nftables \
   openssh-client \
   pavucontrol \
+  picom \
   pipewire \
   pipewire-pulse \
   pipewire-audio \
@@ -47,16 +52,25 @@ sudo apt install -y \
   unzip \
   vim \
   wget \
+  x11-xserver-utils \
   xorg \
   xserver-xorg \
   xinit \
   zip
 
-# Step 4: Setup themes and configuration
-echo "Setting up themes and configuration..."
-sudo ./setup-theme-config.sh
+# Step 4: Build suckless tools
+echo "Building suckless tools..."
+sudo $HOME/dbqt/.install/setup-suckless.sh
 
-# Step 5: Install systemd-boot
+# Step 5: Build qtile
+echo "Installing qtile..."
+sudo $HOME/dbqt/.install/setup-qtile.sh
+
+# Step 6: Setup themes and configuration
+echo "Setting up themes and configuration..."
+sudo $HOME/dbqt/.install/setup-theme-config.sh
+
+# Step 7: Install systemd-boot
 echo "Installing systemd-boot..."
 sudo apt install -y systemd-boot
 sudo bootctl install
@@ -70,12 +84,12 @@ sudo efibootmgr
 read -r BOOT_ID
 sudo efibootmgr -b "$BOOT_ID" -B
 
-# Step 6: Configure network and services
+# Step 8: Configure network and services
 echo "Configuring network and services..."
-sudo ./network-services-setup.sh
+sudo $HOME/dbqt/.install/network-services-setup.sh
 
-# Step 7: Setup nftables firewall
+# Step 9: Setup nftables firewall
 echo "Setting up nftables firewall..."
-sudo ./setup-nftables.sh
+sudo $HOME/dbqt/.install/setup-nftables.sh
 
 echo "Installation complete!"
