@@ -1,29 +1,3 @@
-# Copyright (c) 2010 Aldo Cortesi
-# Copyright (c) 2010, 2014 dequis
-# Copyright (c) 2012 Randall Ma
-# Copyright (c) 2012-2014 Tycho Andersen
-# Copyright (c) 2012 Craig Barnes
-# Copyright (c) 2013 horsik
-# Copyright (c) 2013 Tao Sauvage
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
 from libqtile import bar, layout, qtile, widget, hook
 from libqtile.config import Click, Drag, Group, Key, Match, Screen, ScratchPad, DropDown
 from libqtile.lazy import lazy
@@ -83,21 +57,18 @@ def autostart():
     subprocess.Popen(["flatpak", "run", "org.flameshot.Flameshot"])
     subprocess.Popen(["sh", "-c", "while true; do xclip -selection clipboard -t text/plain -o 2>/dev/null | cliphist store 2>/dev/null; sleep 1; done"])
     subprocess.Popen(["dunst"])
-    home = os.path.expanduser('~')
-    subprocess.Popen([home + '/.local/scripts/vpn-systray.py'])
 
 mod = "mod4"
 terminal = "st"
 
 # Keybinds
 keys = [
-    Key([mod], "a", lazy.spawn("rofi -show combi -combi-modes 'drun,run' -theme ~/.config/rofi/qtile-prompt.rasi -sort -no-cycle")),
-    # Key([mod], "a", lazy.function(show_applications_popup), lazy.spawncmd(), desc="Show apps and spawn command prompt"),
+    # Key([mod], "a", , desc=""),  # a - removed rofi
     Key([mod], "b",lazy.spawn("sudo /usr/local/bin/battery-toggle"), desc="Toggle battery charge threshold (80%/100%)"),
     Key([mod], "c", lazy.spawn("sh -c \"cliphist list | rofi -dmenu -p 'Clipboard' -theme ~/.config/rofi/clipboard.rasi -no-cycle | cliphist decode | xclip -selection clipboard\""), desc="Show clipboard history"),
     Key([mod, "shift"], "c", lazy.spawn("sh -c \"cliphist wipe && dunstify 'Clipboard Cleared' -t 2000\""), desc="Clear clipboard history"),
     # Key([mod], "d", , desc=""),  # d
-    Key([mod], "e", lazy.spawn("st -e lf"), desc="Launch LF file manager"),  # e
+    # Key([mod], "e", , desc=""),  # e - removed lf
     Key([mod], "f", lazy.window.toggle_fullscreen(), desc="Toggle fullscreen on the focused window"),  # f
     Key([mod], "g", lazy.spawn("flatpak run org.gimp.GIMP"), desc="Launch GIMP"),
     # Key([mod], "h", , desc=""),  # h
@@ -147,11 +118,6 @@ for vt in range(1, 8):
         )
     )
 
-
-# Define groups following the documentation pattern exactly
-
-# groups = [Group(i) for i in "12345"]
-
 groups = [Group(i) for i in "12345"]
 
 for i in groups:
@@ -188,12 +154,6 @@ groups.append(ScratchPad("scratchpad", [
 ]))
 
 layouts = [
-    # layout.Columns(border_focus_stack=["#d75f5f", "#8f3d3d"], border_width=4),
-    # Try more layouts by unleashing below layouts.
-    # layout.Stack(num_stacks=2),
-    # layout.Bsp(),
-    # layout.Matrix(),
-    # layout.MonadTall(),
     layout.MonadWide(
     	ratio=0.70,
     	border_focus='#67608B',
@@ -202,11 +162,6 @@ layouts = [
 	margin=6,
 	),
     layout.Max(),
-    # layout.RatioTile(),
-    # layout.Tile(),
-    # layout.TreeTab(),
-    # layout.VerticalTile(),
-    # layout.Zoomy(),
 ]
 
 widget_defaults = dict(
@@ -220,7 +175,6 @@ screens = [
     Screen(
         top=bar.Bar(
             [
-                # widget.CurrentLayout(background="#00000000"),
                 widget.GroupBox(
 			background="#00000000",
     			highlight_method='border',
@@ -259,12 +213,8 @@ screens = [
                     },
                     name_transform=lambda name: name.upper(),
                 ),
-                # widget.TextBox("default config", name="default"),
-                # widget.TextBox("Press &lt;M-r&gt; to spawn", foreground="#d75f5f"),
-                # NB Systray is incompatible with Wayland, consider using StatusNotifier instead
-                # widget.StatusNotifier(),
 		widget.TextBox(
-			text="  ",
+			text="  ",
     			background="#00000000",
     			foreground="#777777",
     			padding=0,
@@ -279,7 +229,7 @@ screens = [
     			},
 		),
 		widget.TextBox(
-			text=" ",
+			text=" ",
     			background="#00000000",
     			foreground="#B8A000",
     			padding=0,
@@ -292,7 +242,7 @@ screens = [
 			update_interval=0.1,
 		),
 		widget.TextBox(
-			text="   ",
+			text="   ",
     			background="#00000000",
     			foreground="#00B399",
     			padding=0,
@@ -303,7 +253,7 @@ screens = [
     			update_interval=30,
 		),
 		widget.TextBox(
-			text="   ",
+			text="   ",
     			background="#00000000",
     			foreground="#666666",
     			padding=0,
@@ -314,17 +264,10 @@ screens = [
     			foreground="#FFFFFF",
     			padding=3,
 		),
-		# widget.QuickExit(),
             ],
             24,
 	    background='#00000000',
-            # border_width=[2, 0, 2, 0],  # Draw top and bottom borders
-            # border_color=["ff00ff", "000000", "ff00ff", "000000"]  # Borders are magenta
         ),
-        # You can uncomment this variable if you see that on X11 floating resize/moving is laggy
-        # By default we handle these events delayed to already improve performance, however your system might still be struggling
-        # This variable is set to None (no cap) by default, but you can set it to 60 to indicate that you limit it to 60 events per second
-        # x11_drag_polling_rate = 60,
     ),
 ]
 
