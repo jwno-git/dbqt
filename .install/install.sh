@@ -6,6 +6,9 @@ read -p "Press Enter to continue..."
 # Make all scripts executable
 chmod +x $HOME/dbqt/.install/*.sh
 
+# Create source directory for builds
+mkdir -p $HOME/src
+
 # Step 1: Setup zram swap
 echo "Setting up zram swap..."
 sudo $HOME/dbqt/.install/setup-zram.sh
@@ -64,20 +67,24 @@ sudo apt install -y \
 echo "Building suckless tools..."
 sudo $HOME/dbqt/.install/setup-suckless.sh
 
-# Step 5: Build qtile
+# Step 5: Setup BLE.sh (Bash Line Editor)
+echo "Installing BLE.sh..."
+sudo $HOME/dbqt/.install/setup-ble.sh
+
+# Step 6: Build qtile
 echo "Installing qtile..."
 sudo $HOME/dbqt/.install/setup-qtile.sh
 
-# Step 6: Install Flatpaks
+# Step 7: Install Flatpaks
 echo "Installing Flatpak applications..."
 flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
 flatpak install -y --user flathub org.flameshot.Flameshot
 
-# Step 7: Setup themes and configuration
+# Step 8: Setup themes and configuration
 echo "Setting up themes and configuration..."
 sudo $HOME/dbqt/.install/setup-theme-config.sh
 
-# Step 8: Install systemd-boot
+# Step 9: Install systemd-boot
 echo "Installing systemd-boot..."
 sudo apt install -y systemd-boot
 sudo bootctl install
@@ -91,11 +98,11 @@ sudo efibootmgr
 read -r BOOT_ID
 sudo efibootmgr -b "$BOOT_ID" -B
 
-# Step 9: Configure network and services
+# Step 10: Configure network and services
 echo "Configuring network and services..."
 sudo $HOME/dbqt/.install/network-services-setup.sh
 
-# Step 10: Setup nftables firewall
+# Step 11: Setup nftables firewall
 echo "Setting up nftables firewall..."
 sudo $HOME/dbqt/.install/setup-nftables.sh
 
