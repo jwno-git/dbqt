@@ -61,6 +61,7 @@ def autostart():
     subprocess.Popen(["flatpak", "run", "com.slack.Slack"])
     subprocess.Popen(["flatpak", "run", "com.protonvpn.www"])
     subprocess.Popen(["flatpak", "run", "com.discordapp.Discord"])
+    subprocess.Popen(["flatpak", "run", "com.protonvpn.www"])
 
 mod = "mod4"
 terminal = "st"
