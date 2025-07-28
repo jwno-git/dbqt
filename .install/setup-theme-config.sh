@@ -31,7 +31,8 @@ mv $HOME/dbqt/Documents $HOME/
 mv $HOME/dbqt/Pictures $HOME/
 mv $HOME/dbqt/.vimrc $HOME/
 mv $HOME/dbqt/.bashrc $HOME/
-mv $HOME/dbqt/bookmarks.html $HOME/
+mv $HOME/dbqt/.xinitrc $HOME/
+mv $HOME/dbqt/.Xresources $HOME/
 
 # Copy .bashrc and .vimrc to root directory (same files for both user and root)
 sudo cp $HOME/.bashrc /root/
