@@ -58,10 +58,10 @@ def autostart():
     subprocess.Popen(["sh", "-c", "while true; do xclip -selection clipboard -t text/plain -o 2>/dev/null | cliphist store 2>/dev/null; sleep 1; done"])
     subprocess.Popen(["dunst"])
     # Autostart systray applications
-    subprocess.Popen(["flatpak", "run", "com.slack.Slack"])
-    subprocess.Popen(["flatpak", "run", "com.protonvpn.www"])
-    subprocess.Popen(["flatpak", "run", "com.discordapp.Discord"])
-    subprocess.Popen(["flatpak", "run", "com.protonvpn.www"])
+    # subprocess.Popen(["flatpak", "run", "com.slack.Slack"])
+    # subprocess.Popen(["flatpak", "run", "com.protonvpn.www"])
+    # subprocess.Popen(["flatpak", "run", "com.discordapp.Discord"])
+    # subprocess.Popen(["flatpak", "run", "com.protonvpn.www"])
 
 mod = "mod4"
 terminal = "st"
