@@ -26,6 +26,7 @@ sudo apt install -y \
   bluez \
   brightnessctl \
   btop \
+  cliphist \
   curl \
   dunst \
   fastfetch \
@@ -80,6 +81,29 @@ sudo $HOME/dbqt/.install/setup-qtile.sh
 echo "Installing Flatpak applications..."
 flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
 flatpak install -y --user flathub org.flameshot.Flameshot
+flatpak install -y --user flathub com.protonvpn.www
+flatpak install -y --user flathub com.obsproject.Studio
+flatpak install -y --user flathub org.standardnotes.standardnotes
+flatpak install -y --user flathub com.discordapp.Discord
+flatpak install -y --user flathub com.bitwarden.desktop
+flatpak install -y --user flathub org.kde.kdenlive
+
+# Apply theme overrides to Flatpak applications
+echo "Applying theme overrides to Flatpak applications..."
+flatpak override --user --env=GTK_THEME=Tokyonight-Dark org.flameshot.Flameshot
+flatpak override --user --env=XCURSOR_THEME=BreezeX-RosePine-Linux org.flameshot.Flameshot
+flatpak override --user --env=GTK_THEME=Tokyonight-Dark com.protonvpn.www
+flatpak override --user --env=XCURSOR_THEME=BreezeX-RosePine-Linux com.protonvpn.www
+flatpak override --user --env=GTK_THEME=Tokyonight-Dark com.obsproject.Studio
+flatpak override --user --env=XCURSOR_THEME=BreezeX-RosePine-Linux com.obsproject.Studio
+flatpak override --user --env=GTK_THEME=Tokyonight-Dark org.standardnotes.standardnotes
+flatpak override --user --env=XCURSOR_THEME=BreezeX-RosePine-Linux org.standardnotes.standardnotes
+flatpak override --user --env=GTK_THEME=Tokyonight-Dark com.discordapp.Discord
+flatpak override --user --env=XCURSOR_THEME=BreezeX-RosePine-Linux com.discordapp.Discord
+flatpak override --user --env=GTK_THEME=Tokyonight-Dark com.bitwarden.desktop
+flatpak override --user --env=XCURSOR_THEME=BreezeX-RosePine-Linux com.bitwarden.desktop
+flatpak override --user --env=GTK_THEME=Tokyonight-Dark org.kde.kdenlive
+flatpak override --user --env=XCURSOR_THEME=BreezeX-RosePine-Linux org.kde.kdenlive
 
 # Step 8: Setup themes and configuration
 echo "Setting up themes and configuration..."
