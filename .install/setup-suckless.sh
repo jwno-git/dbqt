@@ -19,9 +19,7 @@ apt install -y \
   pkg-config \
   make
 
-# Create source directory
-mkdir -p $HOME/.local/src
-cd $HOME/.local/src
+cd $HOME/src
 
 # Build ST terminal
 echo "Building ST terminal..."
@@ -71,9 +69,6 @@ patch -p1 < dmenu-alpha-20230110-5.2.diff
 make clean install
 cd ..
 tar -czf dmenu-patched-backup.tar.gz dmenu/
-
-# Cleanup downloaded archives
-rm -f st-0.9.2.tar.gz
 
 echo "Suckless tools built and installed"
 echo "Backup archives created:"
