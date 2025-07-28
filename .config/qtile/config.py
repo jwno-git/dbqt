@@ -57,6 +57,10 @@ def autostart():
     subprocess.Popen(["flatpak", "run", "org.flameshot.Flameshot"])
     subprocess.Popen(["sh", "-c", "while true; do xclip -selection clipboard -t text/plain -o 2>/dev/null | cliphist store 2>/dev/null; sleep 1; done"])
     subprocess.Popen(["dunst"])
+    # Autostart systray applications
+    subprocess.Popen(["flatpak", "run", "com.slack.Slack"])
+    subprocess.Popen(["flatpak", "run", "com.protonvpn.www"])
+    subprocess.Popen(["flatpak", "run", "com.discordapp.Discord"])
 
 mod = "mod4"
 terminal = "st"
@@ -70,7 +74,7 @@ keys = [
     # Key([mod], "d", , desc=""),  # d
     # Key([mod], "e", , desc=""),  # e - removed lf
     Key([mod], "f", lazy.window.toggle_fullscreen(), desc="Toggle fullscreen on the focused window"),  # f
-    Key([mod], "g", lazy.spawn("flatpak run org.gimp.GIMP"), desc="Launch GIMP"),
+    # Key([mod], "g", , desc=""),  # g
     # Key([mod], "h", , desc=""),  # h
     # Key([mod], "i", , desc=""),  # i
     # Key([mod], "j", , desc=""),  # j
