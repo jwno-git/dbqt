@@ -17,10 +17,7 @@ cp -r $HOME/.icons/BreezeX-RosePine-Linux /usr/share/icons/
 cp -r $HOME/.themes/Tokyonight-Dark /usr/share/themes/
 
 # Setup root configuration
-mkdir -p /root/.src
 mv $HOME/dbqt/.root/.config /root/
-mv $HOME/dbqt/.root/.vimrc /root/
-mv $HOME/dbqt/.root/debianroot.png /root/
 mv $HOME/dbqt/.root/tlp.conf /etc/
 
 # Move battery toggle script
@@ -35,10 +32,13 @@ mv $HOME/dbqt/Pictures $HOME/
 mv $HOME/dbqt/.vimrc $HOME/
 mv $HOME/dbqt/.bashrc $HOME/
 mv $HOME/dbqt/bookmarks.html $HOME/
-cp $HOME/.bashrc /root/
+
+# Copy .bashrc and .vimrc to root directory (same files for both user and root)
+sudo cp $HOME/.bashrc /root/
+sudo cp $HOME/.vimrc /root/
 
 # Make scripts executable
-chmod +x $HOME/.local/scripts/*.sh
+chmod +x $HOME/.local/bin/*.sh
 
 # Configure cursor theme
 sed -i 's/Adwaita/BreezeX-RosePine-Linux/g' /usr/share/icons/default/index.theme
