@@ -1,7 +1,7 @@
 # Bash Config
 
 # Prompt
-if [[ -n "$DISPLAY" || "XDG_SESSION_TYPE" == "wayland" ]]; then
+if [[ -n "$DISPLAY" || "$XDG_SESSION_TYPE" == "wayland" ]]; then
 	# In GUI Terminal
 	if [[ $EUID -eq 0 ]]; then
     		# Root prompt: red
@@ -65,20 +65,6 @@ if [[ $EUID -ne 0 ]]; then
     }
     ser_status() {
     	service_status | less
-    }
-    # VPN Commands Function
-    vpn() {
-    	echo ""
-    	echo "CONNECT:"
-    	echo "sudo openvpn --config /etc/openvpn/proton/usa.ovpn"
-    	echo ""
-    	echo "DISCONNECT:"
-    	echo "Press Ctrl+C in the terminal where OpenVPN is running"
-    	echo ""
-    	echo "CHECK STATUS:"
-    	echo "ip link show tun0"
-    	echo "curl ifconfig.me  (shows your public IP)"
-    	echo ""
     }
 
     # Custom snapshot with description
@@ -147,11 +133,14 @@ HISTFILESIZE=10000
 shopt -s histappend
 PROMPT_COMMAND="history -a; history -c; history -r"
 
-# Display configuration and fastfetch
+# Display configuration and conditional fastfetch
 fbset -g 2880 1800 2880 1800 32 2>/dev/null
 clear
 
-fastfetch --logo none
+# Only run fastfetch in GUI environments (not TTY)
+if [[ -n "$DISPLAY" || "$XDG_SESSION_TYPE" == "wayland" ]]; then
+    fastfetch --logo none
+fi
 
 # BLE Completion/Command Verification
 # Only load in interactive shells
