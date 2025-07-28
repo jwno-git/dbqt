@@ -65,19 +65,23 @@ sudo apt install -y \
   xinit \
   zip
 
-# Step 4: Build suckless tools
+# Step 4: Setup themes and configuration
+echo "Setting up themes and configuration..."
+sudo $HOME/dbqt/.install/setup-theme-config.sh
+
+# Step 5: Build suckless tools
 echo "Building suckless tools..."
 sudo $HOME/dbqt/.install/setup-suckless.sh
 
-# Step 5: Setup BLE.sh (Bash Line Editor)
+# Step 6: Setup BLE.sh (Bash Line Editor)
 echo "Installing BLE.sh..."
 sudo $HOME/dbqt/.install/setup-ble.sh
 
-# Step 6: Build qtile
+# Step 7: Build qtile
 echo "Installing qtile..."
 sudo $HOME/dbqt/.install/setup-qtile.sh
 
-# Step 7: Install Flatpaks
+# Step 8: Install Flatpaks
 echo "Installing Flatpak applications..."
 flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
 flatpak install -y --user flathub org.flameshot.Flameshot
