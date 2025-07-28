@@ -87,6 +87,7 @@ flatpak install -y --user flathub org.standardnotes.standardnotes
 flatpak install -y --user flathub com.discordapp.Discord
 flatpak install -y --user flathub com.bitwarden.desktop
 flatpak install -y --user flathub org.kde.kdenlive
+flatpak install -y --user flathub com.slack.Slack
 
 # Apply theme overrides to Flatpak applications
 echo "Applying theme overrides to Flatpak applications..."
@@ -104,6 +105,8 @@ flatpak override --user --env=GTK_THEME=Tokyonight-Dark com.bitwarden.desktop
 flatpak override --user --env=XCURSOR_THEME=BreezeX-RosePine-Linux com.bitwarden.desktop
 flatpak override --user --env=GTK_THEME=Tokyonight-Dark org.kde.kdenlive
 flatpak override --user --env=XCURSOR_THEME=BreezeX-RosePine-Linux org.kde.kdenlive
+flatpak override --user --env=GTK_THEME=Tokyonight-Dark com.slack.Slack
+flatpak override --user --env=XCURSOR_THEME=BreezeX-RosePine-Linux com.slack.Slack
 
 # Step 8: Setup themes and configuration
 echo "Setting up themes and configuration..."
