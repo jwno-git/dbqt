@@ -30,6 +30,7 @@ sudo apt install -y \
   dunst \
   fastfetch \
   fbset \
+  feh \
   firefox-esr-l10n-en-ca \
   flatpak \
   fonts-font-awesome \
