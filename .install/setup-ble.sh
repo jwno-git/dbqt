@@ -2,7 +2,7 @@
 set -e
 
 # Change to source directory
-cd $HOME/src
+cd /home/jwno/src
 
 # Clone BLE.sh repository
 echo "Cloning BLE.sh repository..."
