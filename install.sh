@@ -19,6 +19,7 @@ mv /home/jwno/dbqt/.xinitrc /home/$USER/
 mv /home/jwno/dbqt/.Xresources /home/$USER/
 mv /home/jwno/dbqt/.icons /home/jwno/
 mv /home/jwno/dbqt/.themes /home/jwno/
+mv /home/jwno/dbqt/.blerc /home/jwno
 
 sleep 0.5
 
@@ -50,6 +51,7 @@ sudo chmod +x /usr/local/bin/battery-toggle
 # Copy .bashrc and .vimrc to root directory (same files for both user and root)
 sudo cp /home/jwno/.bashrc /root/
 sudo cp /home/jwno/.vimrc /root/
+sudo cp /home/jwno/.blerc /root/
 
 # Make scripts executable
 chmod +x /home/jwno/.local/bin/*.sh
