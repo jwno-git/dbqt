@@ -3,21 +3,111 @@ set -e
 
 read -p "Press Enter to continue..."
 
-# Make all scripts executable
-chmod +x /home/jwno/dbqt/.install/*.sh
-
 # Create source directory for builds
-mkdir -p /home/jwno/src
+mkdir -p /home/$USER/src
+
+# Move all configuration files and directories first
+echo "Moving configuration files and directories..."
+
+# Extract and setup themes
+cd /home/$USER/dbqt/.icons/
+if [ -f BreezeX-RosePine-Linux.tar.xz ]; then
+    tar -xf BreezeX-RosePine-Linux.tar.xz
+else
+    echo "Error: BreezeX-RosePine-Linux.tar.xz not found"
+    exit 1
+fi
+
+cd /home/$USER/dbqt/.themes/
+if [ -f Tokyonight-Dark.tar.xz ]; then
+    tar -xf Tokyonight-Dark.tar.xz
+else
+    echo "Error: Tokyonight-Dark.tar.xz not found"
+    exit 1
+fi
+
+# Move themes to user directories
+mv /home/$USER/dbqt/.icons /home/$USER/
+mv /home/$USER/dbqt/.themes /home/$USER/
+
+# Setup root configuration
+sudo mv /home/$USER/dbqt/.root/.config /root/
+sudo mv /home/$USER/dbqt/.root/tlp.conf /etc/
+
+# Move battery toggle script
+sudo mv /home/$USER/dbqt/battery-toggle /usr/local/bin/
+sudo chmod +x /usr/local/bin/battery-toggle
+
+# Move user configuration
+mv /home/$USER/dbqt/.config /home/$USER/
+mv /home/$USER/dbqt/.local /home/$USER/
+mv /home/$USER/dbqt/Pictures /home/$USER/
+mv /home/$USER/dbqt/.vimrc /home/$USER/
+mv /home/$USER/dbqt/.bashrc /home/$USER/
+mv /home/$USER/dbqt/.xinitrc /home/$USER/
+mv /home/$USER/dbqt/.Xresources /home/$USER/
+
+# Copy .bashrc and .vimrc to root directory (same files for both user and root)
+sudo cp /home/$USER/.bashrc /root/
+sudo cp /home/$USER/.vimrc /root/
+
+# Make scripts executable
+chmod +x /home/$USER/.local/bin/*.sh
+
+# Cleanup
+rm -rf /home/$USER/dbqt/.root
+
+echo "Configuration files moved successfully"
 
 # Step 1: Setup zram swap
 echo "Setting up zram swap..."
-sudo /home/jwno/dbqt/.install/setup-zram.sh
+# Install required packages
+sudo apt update && sudo apt install -y util-linux zstd
+
+# Load zram module
+sudo modprobe zram num_devices=1
+
+# Create systemd service
+sudo tee /etc/systemd/system/zram-swap.service > /dev/null << 'EOF'
+[Unit]
+Description=zram swap
+After=multi-user.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/zram-swap
+ExecStop=/sbin/swapoff /dev/zram0
+TimeoutSec=30
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Create swap script
+sudo tee /usr/local/bin/zram-swap > /dev/null << 'EOF'
+#!/bin/bash
+modprobe zram num_devices=1
+echo zstd > /sys/block/zram0/comp_algorithm
+echo 8G > /sys/block/zram0/disksize
+mkswap /dev/zram0
+swapon -p 100 /dev/zram0
+EOF
+
+sudo chmod +x /usr/local/bin/zram-swap
+
+# Enable and start
+sudo systemctl daemon-reload
+sudo systemctl enable zram-swap.service
+sudo systemctl start zram-swap.service
+
+echo "zram swap enabled: 8G"
 
 # Step 2: Add Chrome repository
+echo "Adding Chrome repository..."
 wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/google-chrome-keyring.gpg
 echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
 
-sudo apt update
 sudo apt modernize-sources -y
 
 # Step 3: Install main packages
@@ -65,23 +155,150 @@ sudo apt install -y \
   xinit \
   zip
 
-# Step 4: Setup themes and configuration
-echo "Setting up themes and configuration..."
-sudo /home/jwno/dbqt/.install/setup-theme-config.sh
-
-# Step 5: Build suckless tools
+# Step 4: Build suckless tools
 echo "Building suckless tools..."
-sudo /home/jwno/dbqt/.install/setup-suckless.sh
+# Install build dependencies
+sudo apt install -y \
+  build-essential \
+  git \
+  libx11-dev \
+  libxft-dev \
+  libxinerama-dev \
+  libxext-dev \
+  libxrandr-dev \
+  libimlib2-dev \
+  libexif-dev \
+  libgif-dev \
+  libpam0g-dev \
+  libxmu-dev \
+  pkg-config \
+  make
 
-# Step 6: Setup BLE.sh (Bash Line Editor)
+cd /home/$USER/src
+
+# Build ST terminal
+echo "Building ST terminal..."
+wget https://dl.suckless.org/st/st-0.9.2.tar.gz
+tar -xzf st-0.9.2.tar.gz
+cd st-0.9.2
+
+# Download and apply patches
+wget https://st.suckless.org/patches/blinking_cursor/st-blinking_cursor-20230819-3a6d6d7.diff
+wget https://st.suckless.org/patches/bold-is-not-bright/st-bold-is-not-bright-20190127-3be4cf1.diff
+wget https://st.suckless.org/patches/scrollback/st-scrollback-0.9.2.diff
+wget https://st.suckless.org/patches/scrollback/st-scrollback-mouse-0.9.2.diff
+
+patch -p1 < st-blinking_cursor-20230819-3a6d6d7.diff
+patch -p1 < st-bold-is-not-bright-20190127-3be4cf1.diff
+patch -p1 < st-scrollback-0.9.2.diff
+patch -p1 < st-scrollback-mouse-0.9.2.diff
+
+make clean
+sudo make install
+cd ..
+tar -czf st-patched-backup.tar.gz st-0.9.2/
+
+# Build sxiv
+echo "Building sxiv..."
+git clone https://github.com/xyb3rt/sxiv
+cd sxiv
+make clean
+sudo make install
+cd ..
+tar -czf sxiv-backup.tar.gz sxiv/
+
+# Build slock
+echo "Building slock..."
+git clone https://git.suckless.org/slock
+cd slock
+wget https://tools.suckless.org/slock/patches/blur-pixelated-screen/slock-blur_pixelated_screen-1.4.diff
+patch -p1 < slock-blur_pixelated_screen-1.4.diff
+make clean
+sudo make install
+cd ..
+tar -czf slock-patched-backup.tar.gz slock/
+
+# Build dmenu
+echo "Building dmenu..."
+git clone https://git.suckless.org/dmenu
+cd dmenu
+wget https://tools.suckless.org/dmenu/patches/alpha/dmenu-alpha-20230110-5.2.diff
+patch -p1 < dmenu-alpha-20230110-5.2.diff
+make clean
+sudo make install
+cd ..
+tar -czf dmenu-patched-backup.tar.gz dmenu/
+
+# Cleanup downloaded archives
+rm -f st-0.9.2.tar.gz
+
+echo "Suckless tools built and installed"
+
+# Step 5: Setup BLE.sh (Bash Line Editor)
 echo "Installing BLE.sh..."
-sudo /home/jwno/dbqt/.install/setup-ble.sh
+cd /home/$USER/src
 
-# Step 7: Build qtile
+# Clone BLE.sh repository
+echo "Cloning BLE.sh repository..."
+git clone https://github.com/akinomyoga/ble.sh.git
+cd ble.sh
+
+# Build BLE.sh
+echo "Building BLE.sh..."
+make
+
+# Install system-wide to /usr/local
+echo "Installing BLE.sh to /usr/local/share/blesh..."
+sudo make install PREFIX=/usr/local
+
+echo "BLE.sh installed successfully"
+
+# Step 6: Build qtile
 echo "Installing qtile..."
-sudo /home/jwno/dbqt/.install/setup-qtile.sh
+# Install qtile dependencies
+sudo apt install -y \
+  python3 \
+  python3-pip \
+  python3-dev \
+  python3-setuptools \
+  python3-wheel \
+  python3-cffi \
+  python3-xcffib \
+  libpangocairo-1.0-0 \
+  libcairo-gobject2 \
+  libgtk-3-0 \
+  libgdk-pixbuf2.0-0 \
+  python3-gi \
+  python3-gi-cairo \
+  gir1.2-gtk-3.0
 
-# Step 8: Install Flatpaks
+# Upgrade pip
+python3 -m pip install --upgrade pip
+
+# Install qtile system-wide
+sudo pip install qtile
+
+# Create qtile desktop entry
+sudo mkdir -p /usr/share/xsessions
+sudo tee /usr/share/xsessions/qtile.desktop > /dev/null << 'EOF'
+[Desktop Entry]
+Name=Qtile
+Comment=Qtile Session
+Exec=qtile start
+Type=Application
+Keywords=wm;tiling
+EOF
+
+# Install themes system-wide (now that themes are moved and extracted)
+sudo cp -r /home/$USER/.icons/BreezeX-RosePine-Linux /usr/share/icons/
+sudo cp -r /home/$USER/.themes/Tokyonight-Dark /usr/share/themes/
+
+# Configure cursor theme
+sudo sed -i 's/Adwaita/BreezeX-RosePine-Linux/g' /usr/share/icons/default/index.theme
+
+echo "Qtile installed and configured"
+
+# Step 7: Install Flatpaks
 echo "Installing Flatpak applications..."
 flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
 flatpak install -y --user flathub org.flameshot.Flameshot
@@ -112,11 +329,7 @@ flatpak override --user --env=XCURSOR_THEME=BreezeX-RosePine-Linux org.kde.kdenl
 flatpak override --user --env=GTK_THEME=Tokyonight-Dark com.slack.Slack
 flatpak override --user --env=XCURSOR_THEME=BreezeX-RosePine-Linux com.slack.Slack
 
-# Step 8: Setup themes and configuration
-echo "Setting up themes and configuration..."
-sudo /home/jwno/dbqt/.install/setup-theme-config.sh
-
-# Step 9: Install systemd-boot
+# Step 8: Install systemd-boot
 echo "Installing systemd-boot..."
 sudo apt install -y systemd-boot
 sudo bootctl install
@@ -130,12 +343,71 @@ sudo efibootmgr
 read -r BOOT_ID
 sudo efibootmgr -b "$BOOT_ID" -B
 
-# Step 10: Configure network and services
+# Step 9: Configure network and services
 echo "Configuring network and services..."
-sudo /home/jwno/dbqt/.install/network-services-setup.sh
+# Configure NetworkManager
+sudo sed -i 's/managed=false/managed=true/g' /etc/NetworkManager/NetworkManager.conf
 
-# Step 11: Setup nftables firewall
+# Remove motd
+sudo rm -rf /etc/motd
+
+# Setup network interfaces
+sudo tee /etc/network/interfaces > /dev/null << 'EOF'
+source /etc/network/interfaces.d/*
+auto lo
+iface lo inet loopback
+EOF
+
+# Enable system services
+sudo systemctl enable NetworkManager
+sudo systemctl enable tlp.service
+
+# Enable user services
+systemctl --user enable pipewire
+systemctl --user enable pipewire-pulse
+systemctl --user enable wireplumber
+
+echo "Network and services configured"
+
+# Step 10: Setup nftables firewall
 echo "Setting up nftables firewall..."
-sudo /home/jwno/dbqt/.install/setup-nftables.sh
+# Install nftables
+sudo apt install -y nftables
+
+# Create nftables configuration
+sudo tee /etc/nftables.conf > /dev/null << 'EOF'
+#!/usr/sbin/nft -f
+flush ruleset
+
+table inet filter {
+    chain input {
+        type filter hook input priority filter; policy drop;
+        iif "lo" accept
+        ct state established,related accept
+        ip protocol icmp accept
+        ip6 nexthdr ipv6-icmp accept
+        udp sport 67 udp dport 68 accept
+        udp sport 53 accept
+        tcp sport 53 accept
+        udp sport 123 accept
+        counter drop
+    }
+    
+    chain forward {
+        type filter hook forward priority filter; policy drop;
+    }
+    
+    chain output {
+        type filter hook output priority filter; policy accept;
+    }
+}
+EOF
+
+# Enable and start
+sudo systemctl enable nftables
+sudo systemctl start nftables
+sudo nft -f /etc/nftables.conf
+
+echo "nftables firewall enabled"
 
 echo "Installation complete!"
