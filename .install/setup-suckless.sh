@@ -19,7 +19,7 @@ apt install -y \
   pkg-config \
   make
 
-cd $HOME/src
+cd /home/jwno/src
 
 # Build ST terminal
 echo "Building ST terminal..."
