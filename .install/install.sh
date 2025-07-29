@@ -226,6 +226,7 @@ wget https://tools.suckless.org/slock/patches/blur-pixelated-screen/slock-blur_p
 sleep 0.5
 
 patch -p1 < slock-blur_pixelated_screen-1.4.diff
+sed -i 's/CFLAGS = /CFLAGS = -Wno-error /' Makefile
 make clean
 sudo make install
 cd ..
