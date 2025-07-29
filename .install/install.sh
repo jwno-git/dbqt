@@ -4,14 +4,14 @@ set -e
 read -p "Press Enter to continue..."
 
 # Make all scripts executable
-chmod +x $HOME/dbqt/.install/*.sh
+chmod +x /home/jwno/dbqt/.install/*.sh
 
 # Create source directory for builds
-mkdir -p $HOME/src
+mkdir -p /home/jwno/src
 
 # Step 1: Setup zram swap
 echo "Setting up zram swap..."
-sudo $HOME/dbqt/.install/setup-zram.sh
+sudo /home/jwno/dbqt/.install/setup-zram.sh
 
 # Step 2: Add Chrome repository
 wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/google-chrome-keyring.gpg
@@ -67,19 +67,19 @@ sudo apt install -y \
 
 # Step 4: Setup themes and configuration
 echo "Setting up themes and configuration..."
-sudo $HOME/dbqt/.install/setup-theme-config.sh
+sudo /home/jwno/dbqt/.install/setup-theme-config.sh
 
 # Step 5: Build suckless tools
 echo "Building suckless tools..."
-sudo $HOME/dbqt/.install/setup-suckless.sh
+sudo /home/jwno/dbqt/.install/setup-suckless.sh
 
 # Step 6: Setup BLE.sh (Bash Line Editor)
 echo "Installing BLE.sh..."
-sudo $HOME/dbqt/.install/setup-ble.sh
+sudo /home/jwno/dbqt/.install/setup-ble.sh
 
 # Step 7: Build qtile
 echo "Installing qtile..."
-sudo $HOME/dbqt/.install/setup-qtile.sh
+sudo /home/jwno/dbqt/.install/setup-qtile.sh
 
 # Step 8: Install Flatpaks
 echo "Installing Flatpak applications..."
@@ -114,7 +114,7 @@ flatpak override --user --env=XCURSOR_THEME=BreezeX-RosePine-Linux com.slack.Sla
 
 # Step 8: Setup themes and configuration
 echo "Setting up themes and configuration..."
-sudo $HOME/dbqt/.install/setup-theme-config.sh
+sudo /home/jwno/dbqt/.install/setup-theme-config.sh
 
 # Step 9: Install systemd-boot
 echo "Installing systemd-boot..."
@@ -132,10 +132,10 @@ sudo efibootmgr -b "$BOOT_ID" -B
 
 # Step 10: Configure network and services
 echo "Configuring network and services..."
-sudo $HOME/dbqt/.install/network-services-setup.sh
+sudo /home/jwno/dbqt/.install/network-services-setup.sh
 
 # Step 11: Setup nftables firewall
 echo "Setting up nftables firewall..."
-sudo $HOME/dbqt/.install/setup-nftables.sh
+sudo /home/jwno/dbqt/.install/setup-nftables.sh
 
 echo "Installation complete!"
