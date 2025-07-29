@@ -27,7 +27,7 @@ chmod +x /usr/local/bin/battery-toggle
 # Move user configuration
 mv $HOME/dbqt/.config $HOME/
 mv $HOME/dbqt/.local $HOME/
-mv $HOME/dbqt/Documents $HOME/
+# mv $HOME/dbqt/Documents $HOME/
 mv $HOME/dbqt/Pictures $HOME/
 mv $HOME/dbqt/.vimrc $HOME/
 mv $HOME/dbqt/.bashrc $HOME/
