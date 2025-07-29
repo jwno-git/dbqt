@@ -4,13 +4,26 @@ set -e
 read -p "Press Enter to continue..."
 
 # Create source directory for builds
-mkdir -p /home/$USER/src
+mkdir -p /home/jwno/src
 
 # Move all configuration files and directories first
 echo "Moving configuration files and directories..."
 
+# Move user configuration
+mv /home/jwno/dbqt/.config /home/$USER/
+mv /home/jwno/dbqt/.local /home/$USER/
+mv /home/jwno/dbqt/Pictures /home/$USER/
+mv /home/jwno/dbqt/.vimrc /home/$USER/
+mv /home/jwno/dbqt/.bashrc /home/$USER/
+mv /home/jwno/dbqt/.xinitrc /home/$USER/
+mv /home/jwno/dbqt/.Xresources /home/$USER/
+mv /home/jwno/dbqt/.icons /home/jwno/
+mv /home/jwno/dbqt/.themes /home/jwno/
+
+sleep 0.5
+
 # Extract and setup themes
-cd /home/$USER/dbqt/.icons/
+cd /home/jwno/.icons/
 if [ -f BreezeX-RosePine-Linux.tar.xz ]; then
     tar -xf BreezeX-RosePine-Linux.tar.xz
 else
@@ -18,7 +31,7 @@ else
     exit 1
 fi
 
-cd /home/$USER/dbqt/.themes/
+cd /home/jwno/.themes/
 if [ -f Tokyonight-Dark.tar.xz ]; then
     tar -xf Tokyonight-Dark.tar.xz
 else
@@ -26,36 +39,23 @@ else
     exit 1
 fi
 
-# Move themes to user directories
-mv /home/$USER/dbqt/.icons /home/$USER/
-mv /home/$USER/dbqt/.themes /home/$USER/
-
 # Setup root configuration
-sudo mv /home/$USER/dbqt/.root/.config /root/
-sudo mv /home/$USER/dbqt/.root/tlp.conf /etc/
+sudo mv /home/jwno/dbqt/.root/.config /root/
+# sudo mv /home/jwno/dbqt/.root/tlp.conf /etc/
 
 # Move battery toggle script
-sudo mv /home/$USER/dbqt/battery-toggle /usr/local/bin/
+sudo mv /home/jwno/dbqt/battery-toggle /usr/local/bin/
 sudo chmod +x /usr/local/bin/battery-toggle
 
-# Move user configuration
-mv /home/$USER/dbqt/.config /home/$USER/
-mv /home/$USER/dbqt/.local /home/$USER/
-mv /home/$USER/dbqt/Pictures /home/$USER/
-mv /home/$USER/dbqt/.vimrc /home/$USER/
-mv /home/$USER/dbqt/.bashrc /home/$USER/
-mv /home/$USER/dbqt/.xinitrc /home/$USER/
-mv /home/$USER/dbqt/.Xresources /home/$USER/
-
 # Copy .bashrc and .vimrc to root directory (same files for both user and root)
-sudo cp /home/$USER/.bashrc /root/
-sudo cp /home/$USER/.vimrc /root/
+sudo cp /home/jwno/.bashrc /root/
+sudo cp /home/jwno/.vimrc /root/
 
 # Make scripts executable
-chmod +x /home/$USER/.local/bin/*.sh
+chmod +x /home/jwno/.local/bin/*.sh
 
 # Cleanup
-rm -rf /home/$USER/dbqt/.root
+# rm -rf /home/jwno/dbqt/.root
 
 echo "Configuration files moved successfully"
 
@@ -103,12 +103,16 @@ sudo systemctl start zram-swap.service
 
 echo "zram swap enabled: 8G"
 
+sleep 0.5
+
 # Step 2: Add Chrome repository
 echo "Adding Chrome repository..."
 wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/google-chrome-keyring.gpg
 echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
 
+sudo apt update
 sudo apt modernize-sources -y
+
 
 # Step 3: Install main packages
 echo "Installing main packages..."
@@ -174,7 +178,9 @@ sudo apt install -y \
   pkg-config \
   make
 
-cd /home/$USER/src
+sleep 0.5
+
+cd /home/jwno/src
 
 # Build ST terminal
 echo "Building ST terminal..."
@@ -187,6 +193,8 @@ wget https://st.suckless.org/patches/blinking_cursor/st-blinking_cursor-20230819
 wget https://st.suckless.org/patches/bold-is-not-bright/st-bold-is-not-bright-20190127-3be4cf1.diff
 wget https://st.suckless.org/patches/scrollback/st-scrollback-0.9.2.diff
 wget https://st.suckless.org/patches/scrollback/st-scrollback-mouse-0.9.2.diff
+
+sleep 0.5
 
 patch -p1 < st-blinking_cursor-20230819-3a6d6d7.diff
 patch -p1 < st-bold-is-not-bright-20190127-3be4cf1.diff
@@ -212,6 +220,9 @@ echo "Building slock..."
 git clone https://git.suckless.org/slock
 cd slock
 wget https://tools.suckless.org/slock/patches/blur-pixelated-screen/slock-blur_pixelated_screen-1.4.diff
+
+sleep 0.5
+
 patch -p1 < slock-blur_pixelated_screen-1.4.diff
 make clean
 sudo make install
@@ -223,6 +234,9 @@ echo "Building dmenu..."
 git clone https://git.suckless.org/dmenu
 cd dmenu
 wget https://tools.suckless.org/dmenu/patches/alpha/dmenu-alpha-20230110-5.2.diff
+
+sleep 0.5
+
 patch -p1 < dmenu-alpha-20230110-5.2.diff
 make clean
 sudo make install
@@ -236,7 +250,7 @@ echo "Suckless tools built and installed"
 
 # Step 5: Setup BLE.sh (Bash Line Editor)
 echo "Installing BLE.sh..."
-cd /home/$USER/src
+cd /home/jwno/src
 
 # Clone BLE.sh repository
 echo "Cloning BLE.sh repository..."
@@ -275,6 +289,8 @@ sudo apt install -y \
 # Upgrade pip
 python3 -m pip install --upgrade pip
 
+sleep 0.5
+
 # Install qtile system-wide
 sudo pip install qtile
 
@@ -290,8 +306,8 @@ Keywords=wm;tiling
 EOF
 
 # Install themes system-wide (now that themes are moved and extracted)
-sudo cp -r /home/$USER/.icons/BreezeX-RosePine-Linux /usr/share/icons/
-sudo cp -r /home/$USER/.themes/Tokyonight-Dark /usr/share/themes/
+sudo cp -r /home/jwno/.icons/BreezeX-RosePine-Linux /usr/share/icons/
+sudo cp -r /home/jwno/.themes/Tokyonight-Dark /usr/share/themes/
 
 # Configure cursor theme
 sudo sed -i 's/Adwaita/BreezeX-RosePine-Linux/g' /usr/share/icons/default/index.theme
