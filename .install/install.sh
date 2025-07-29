@@ -131,6 +131,7 @@ sudo apt install -y \
   fonts-font-awesome \
   fonts-hack \
   fonts-terminus \
+  gawk \
   gimp \
   google-chrome-stable \
   lxpolkit \
@@ -146,6 +147,7 @@ sudo apt install -y \
   pipewire-alsa \
   pkexec \
   psmisc \
+  qtile \
   tar \
   tlp \
   tlp-rdw \
@@ -267,33 +269,8 @@ sudo make install PREFIX=/usr/local
 
 echo "BLE.sh installed successfully"
 
-# Step 6: Build qtile
-echo "Installing qtile..."
-# Install qtile dependencies
-sudo apt install -y \
-  python3 \
-  python3-pip \
-  python3-dev \
-  python3-setuptools \
-  python3-wheel \
-  python3-cffi \
-  python3-xcffib \
-  libpangocairo-1.0-0 \
-  libcairo-gobject2 \
-  libgtk-3-0 \
-  libgdk-pixbuf2.0-0 \
-  python3-gi \
-  python3-gi-cairo \
-  gir1.2-gtk-3.0
-
-# Upgrade pip
-python3 -m pip install --upgrade pip
-
-sleep 0.5
-
-# Install qtile system-wide
-sudo pip install qtile
-
+# Step 6: Configure qtile
+echo "Configuring qtile..."
 # Create qtile desktop entry
 sudo mkdir -p /usr/share/xsessions
 sudo tee /usr/share/xsessions/qtile.desktop > /dev/null << 'EOF'
@@ -312,7 +289,7 @@ sudo cp -r /home/jwno/.themes/Tokyonight-Dark /usr/share/themes/
 # Configure cursor theme
 sudo sed -i 's/Adwaita/BreezeX-RosePine-Linux/g' /usr/share/icons/default/index.theme
 
-echo "Qtile installed and configured"
+echo "Qtile configured"
 
 # Step 7: Install Flatpaks
 echo "Installing Flatpak applications..."
